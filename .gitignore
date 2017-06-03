@@ -2,3 +2,8 @@ logs
 .idea
 target
 *.iml
+.idea/
+target/
+/web-spider.iml
+/logs/
+/target/
