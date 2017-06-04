@@ -2,7 +2,6 @@
  * Created by Jason on 2017/6/4.
  */
 define(['angular', 'controller/index'], function(angular) {
-    var mainModule;
-    mainModule = angular.module('mainModule', ['indexController'], angular.noop);
+    var mainModule = angular.module('mainModule', ['controller'], angular.noop);
     return mainModule;
 })
