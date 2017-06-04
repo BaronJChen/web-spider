@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+
+    <script data-main="/js/main/main" src="/js/lib/require.js"></script>
 </head>
 <body>
-    这是主页，做一个测试
+    <div ng-controller="indexController as indexCtrl">
+        {{indexCtrl.data}}
+    </div>
 </body>
 </html>
