@@ -1,10 +1,9 @@
 @charset 'utf-8';
-
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
-    overflow-x:hidden;
-        overflow-y:hidden;
+    overflow: hidden;
 }
 
 .div-container {
@@ -13,7 +12,79 @@ html, body {
 }
 
 .div-left {
-  width: 260px;
-  height: 100%;
-  background-color: #30445c;
+    width: 260px;
+    height: 100%;
+    background-color: #30445c;
+}
+
+.menu-bar-title {
+    font-family: MicrosoftYaHei;
+    font-size: 22px;
+    text-align: left;
+    margin-left: 57px;
+    color: #ffffff;
+    padding-top: 10%;
+}
+
+.menu {
+    height: 51px;
+    padding-left: 57px;
+}
+
+.menu div {
+    float: left;
+    height: 20px;
+}
+
+.menu-home {
+    margin-top: 28px;
+}
+
+.menu div {
+    cursor: pointer;
+}
+
+.icon {
+    background-size: contain;
+    width: 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    margin: 16px 0 15px 8px;
+}
+
+.text {
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    text-align: left;
+    color: #ffffff;
+    margin: 15px 0 16px 8px;
+}
+
+.menu:hover {
+    background-color: #233142;
+    box-shadow: 1px 1.7px 5px 0 #040000c0;
+}
+
+.menu-home-icon {
+    background-image: url("/image/icon/home.png")
+}
+
+.menu-create-task-icon {
+    background-image: url("/image/icon/create-task.png")
+}
+
+.menu-task-list-icon {
+    background-image: url("/image/icon/task-list.png")
+}
+
+.menu-template-list-icon {
+    background-image: url("/image/icon/template-list.png")
+}
+
+.menu-crontab-icon {
+    background-image: url("/image/icon/crontab.png")
+}
+
+.menu-setup-icon {
+    background-image: url("/image/icon/setup.png")
 }

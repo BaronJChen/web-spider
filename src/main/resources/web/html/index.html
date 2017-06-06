@@ -4,20 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
-    <script data-main="/js/main/main" src="/js/lib/require.js"> </script>
-    <link rel="stylesheet" type="text/css" href="/style/index.css" />
+    <script data-main="/js/main/main" src="/js/lib/require.js">
+    </script>
+    <link rel="stylesheet" type="text/css" href="/style/index.css"/>
+    <link rel="stylesheet" type="text/css" href="/style/base.css"/>
 </head>
 
 <body>
-    <div class="div-container" ng-controller="indexController as indexCtrl">
-        <div class="div-left">
-
+<div class="div-container" ng-controller="indexController as indexCtrl">
+    <div class="div-left">
+        <div class="menu-bar-title">
+            <p>Web Spider</p>
         </div>
-
-        <div class="div-right">
-
+        <div class="menu menu-home">
+            <div class="icon menu-home-icon"></div>
+            <div class="text">首页</div>
+        </div>
+        <div class="menu">
+            <div class="icon menu-create-task-icon"></div>
+            <div class="text"> 创建任务</div>
+        </div>
+        <div class="menu">
+            <div class="icon menu-task-list-icon"></div>
+            <div class="text">任务列表</div>
+        </div>
+        <div class="menu">
+            <div class="icon menu-template-list-icon"></div>
+            <div class="text">模板列表</div>
+        </div>
+        <div class="menu">
+            <div class="icon menu-crontab-icon"></div>
+            <div class="text">定时任务</div>
+        </div>
+        <div class="menu">
+            <div class="icon menu-setup-icon"></div>
+            <div class="text">设置</div>
         </div>
     </div>
+
+    <div class="div-right">
+
+    </div>
+</div>
 </body>
 
 </html>
