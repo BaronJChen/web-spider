@@ -8,6 +8,7 @@ require.config({
         angular: 'lib/angular/angular.min',
         angularCookies: 'lib/angular/angular-cookies.min',
         angularTranslate: 'lib/angular/angular-translate.min',
+        angularTranslateLoader: 'lib/angular/angular-translate-loader-static-files.min',
         restangular: 'lib/restangular/restangular',
         lodash: 'lib/lodash/lodash.min'
     },
@@ -19,21 +20,9 @@ require.config({
             deps: ['jQuery'],
             exports: 'angular'
         },
-        angularCookies: {
-            deps: ['angular'],
-            exports: 'angular'
-        },
-        angularTranslate: {
-            deps: ['angular'],
-            exports: 'angular'
-        },
-        restangular: {
-            deps: ['angular', 'lodash'],
-            exports: 'restangular'
-        },
-        lodash: {
-            exports: 'lodash'
-        }
+        angularTranslate: ['angular'],
+        angularTranslateLoader: ['angular', 'angularTranslate'],
+        restangular: ['angular', 'lodash'],
     }
 });
 

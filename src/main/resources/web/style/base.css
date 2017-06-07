@@ -1,4 +1,12 @@
 @charset "utf-8";
+html,
+body {
+    height: 100%;
+    width: 100%;
+    min-height: 700px;
+    margin: 0;
+}
+
 p {
     display: block;
     margin: 0;
