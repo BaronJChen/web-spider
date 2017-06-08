@@ -6,11 +6,10 @@ define([
         'angular'
     ],
     function(controller) {
-        return controller.controller('indexController', [
+        return controller.controller('crontabController', [
             '$scope',
             function() {
                 vm = this;
-                vm.data = 'this is high';
                 return vm;
             }
         ]);

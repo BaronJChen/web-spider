@@ -1,0 +1,8 @@
+{
+    "menu-home": "首页",
+    "menu-create-task": "创建任务",
+    "menu-task-list": "任务列表",
+    "menu-template-list": "模板列表",
+    "menu-crontab": "定时任务",
+    "menu-setup": "设置"
+}

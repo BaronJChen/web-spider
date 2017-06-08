@@ -1,5 +1,4 @@
-@charset 'utf-8';
-
+@charset "utf-8";
 .div-container {
     height: 100%;
     width: 100%;
@@ -9,6 +8,13 @@
     width: 260px;
     height: 100%;
     background-color: #30445c;
+    float: left;
+}
+
+.div-right {
+    width: calc(100% - 260px);
+    height: 100%;
+    float: left;
 }
 
 .menu-bar-title {
@@ -21,21 +27,18 @@
 }
 
 .menu {
-    height: 51px;
+    height: 70px;
     padding-left: 57px;
 }
 
 .menu div {
     float: left;
     height: 20px;
+    cursor: pointer;
 }
 
 .menu-home {
     margin-top: 28px;
-}
-
-.menu div {
-    cursor: pointer;
 }
 
 .icon {
@@ -43,15 +46,16 @@
     width: 20px;
     background-position: center center;
     background-repeat: no-repeat;
-    margin: 16px 0 15px 8px;
+    margin: 25px 0 25px 8px;
 }
 
 .text {
     font-family: MicrosoftYaHei;
     font-size: 16px;
     text-align: left;
+    line-height: 20px;
     color: #ffffff;
-    margin: 15px 0 16px 8px;
+    margin: 25px 0 25px 8px;
 }
 
 .menu:hover {

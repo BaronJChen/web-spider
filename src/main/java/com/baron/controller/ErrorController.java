@@ -13,6 +13,10 @@ import java.util.Date;
 /**
  * Created by Baron.Chen on 2017/6/8.
  */
+
+/**
+ * package all throwable error and exception
+ */
 @ControllerAdvice
 public class ErrorController {
     @ExceptionHandler(value = Throwable.class)

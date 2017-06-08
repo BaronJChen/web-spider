@@ -10,6 +10,7 @@ require.config({
         angularTranslate: 'lib/angular/angular-translate.min',
         angularTranslateLoader: 'lib/angular/angular-translate-loader-static-files.min',
         restangular: 'lib/restangular/restangular',
+        angularRoute: 'lib/angular/angular-ui-router.min',
         lodash: 'lib/lodash/lodash.min'
     },
     shim: {
@@ -20,9 +21,11 @@ require.config({
             deps: ['jQuery'],
             exports: 'angular'
         },
+        angularCookies: ['angular'],
         angularTranslate: ['angular'],
         angularTranslateLoader: ['angular', 'angularTranslate'],
         restangular: ['angular', 'lodash'],
+        angularRoute: ['angular']
     }
 });
 

@@ -1,3 +1,8 @@
 {
     "menu-home": "Home",
+    "menu-create-task": "Create Task",
+    "menu-task-list": "Task List",
+    "menu-template-list": "Template List",
+    "menu-crontab": "Crontab",
+    "menu-setup": "Setup"
 }
