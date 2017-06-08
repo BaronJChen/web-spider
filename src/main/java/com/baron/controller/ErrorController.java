@@ -28,6 +28,7 @@ public class ErrorController {
         exception.setStrackTrace(ThrowableUtil.getStackTrace(e));
         exception.setTime(new Date());
 
+        response.setContentType("application/json");
         response.setStatus(500);
         response.getOutputStream().println(JSON.toJSONString(exception));
     }
