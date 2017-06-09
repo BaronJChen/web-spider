@@ -1,13 +1,14 @@
 package com.baron.program;
 
+import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongoConfig;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.config.*;
 import de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.store.*;
+import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,12 +34,13 @@ public class Application {
 
         try {
             iMongodConfig = new MongodConfigBuilder()
-                    .version(Version.Main.PRODUCTION)
+                    .version(Version.V3_3_1)
                     .net(new Net(ip, port, false))
                     .build();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         MongodExecutable mongodExecutable = mongodStarter.prepare(iMongodConfig);
         try {
             mongodExecutable.start();
