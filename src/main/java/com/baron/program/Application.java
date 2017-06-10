@@ -23,7 +23,7 @@ import java.io.IOException;
 public class Application {
 
     public Application() {
-        init();
+       // init();
     }
 
     private void init() {
@@ -34,7 +34,7 @@ public class Application {
 
         try {
             iMongodConfig = new MongodConfigBuilder()
-                    .version(Version.V3_3_1)
+                    .version(Version.Main.PRODUCTION)
                     .net(new Net(ip, port, false))
                     .build();
         } catch (IOException e) {

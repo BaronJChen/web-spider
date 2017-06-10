@@ -2,9 +2,14 @@ package com.baron.program;
 
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
+import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
 
@@ -13,15 +18,21 @@ import java.io.IOException;
  */
 @Configuration
 public class MongoConfig {
+    @Bean
     public IMongodConfig iMongodConfig() throws IOException {
-        IMongodConfig iMongodConfig = new MongodConfigBuilder()
+        IMongodConfig iMongodConfig = null;
+
+        iMongodConfig = new MongodConfigBuilder()
+                .version(Version.Main.DEVELOPMENT)
                 .build();
+
         return iMongodConfig;
     }
 
-    public IRuntimeConfig iRuntimeConfig() {
-        IRuntimeConfig iRuntimeConfig = new RuntimeConfigBuilder()
-                .build();
-        return iRuntimeConfig;
+    @Bean
+    public CommandLineRunner cmd(MongoTemplate mongoTemplate) {
+        return (args) -> {
+            mongoTemplate.getCollection("spider").count();
+        };
     }
 }
