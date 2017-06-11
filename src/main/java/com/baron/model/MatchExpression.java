@@ -3,7 +3,7 @@ package com.baron.model;
 /**
  * Created by Jason on 2017/6/11.
  */
-public class MathExpression {
+public class MatchExpression {
     private String regex;
     private String xpath;
 

@@ -24,6 +24,8 @@ public class SpiderTemplate {
     private Map<String, String> cookies;
     private Map<String, String> headers;
     private String pageEncoding;
+    private Map<String, MatchExpression> expressions;
+    private Map<String, String> tags;
     private List<String> taskCallbacks;
     private List<String> unitCallbacks;
     private List<Proxy> proxies;
