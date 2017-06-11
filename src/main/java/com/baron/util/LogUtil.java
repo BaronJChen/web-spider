@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LogUtil {
     private static final LogUtil logUtil = new LogUtil();
     private static final Map<Long, LogLevel> levelMap = new ConcurrentHashMap<>();
+    private static LogLevel defaultLevel = LogLevel.INFO;
 
     private LogUtil() {
     }
@@ -71,7 +72,7 @@ public class LogUtil {
         private boolean checkAccessibility(LogLevel currentLevel) {
             LogLevel allowedMinimumLevel = levelMap.get(Thread.currentThread().getId());
 
-            if (currentLevel.compareTo(allowedMinimumLevel) >= 0) {
+            if (currentLevel.compareTo(allowedMinimumLevel == null ? defaultLevel : allowedMinimumLevel) >= 0) {
                 return true;
             } else {
                 return false;
