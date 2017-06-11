@@ -16,10 +16,10 @@
     </properties>
 
     <repositories>
-        <repository>
-            <id>ossrh</id>
-            <url> http://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>ossrh</id>-->
+            <!--<url> http://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--</repository>-->
     </repositories>
 
     <dependencies>
