@@ -1,13 +1,12 @@
 package com.baron.downloader;
 
+import com.baron.pool.WebDriverPool;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Task;
-import us.codecraft.webmagic.downloader.Downloader;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.selector.PlainText;
 
@@ -28,6 +27,7 @@ public class SeleniumDownloader extends HttpClientDownloader {
         } catch (InterruptedException e) {
             logger.error(e);
         } // catch
+
         try {
             driver.get(url);
             content = driver.findElement(By.xpath("/html")).getAttribute("outerHTML");

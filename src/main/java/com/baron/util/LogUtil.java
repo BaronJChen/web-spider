@@ -1,7 +1,7 @@
 package com.baron.util;
 
 import com.baron.model.Log;
-import com.baron.program.Cache;
+import com.baron.program.AppCache;
 import org.apache.log4j.Priority;
 
 import java.util.ArrayList;
@@ -29,22 +29,26 @@ public class LogUtil {
         return new Logger(name);
     }
 
+    public static org.apache.log4j.Logger getLogger(Class clazz) {
+        return new Logger(clazz);
+    }
+
     public static List<List<Log>> collect(List<Long> threadIds) {
         List<List<Log>> logsList = new ArrayList<>();
 
         for (Long threadId : threadIds) {
-            logsList.add((List<Log>) Cache.get(threadId));
+            logsList.add((List<Log>) AppCache.get(threadId));
         } // for
 
         return logsList;
     }
 
     private static List<Log> collect(Long threadId) {
-        return (List<Log>)Cache.get(threadId);
+        return (List<Log>) AppCache.get(threadId);
     }
 
     private static List<Log> collect() {
-        return (List<Log>)Cache.get(Thread.currentThread().getId());
+        return (List<Log>) AppCache.get(Thread.currentThread().getId());
     }
 
     /**
@@ -69,6 +73,9 @@ public class LogUtil {
             super(name);
         }
 
+        protected Logger(Class clazz) {
+            super(clazz.getName());
+        }
         private boolean checkAccessibility(LogLevel currentLevel) {
             LogLevel allowedMinimumLevel = levelMap.get(Thread.currentThread().getId());
 
@@ -81,10 +88,10 @@ public class LogUtil {
 
         private void cacheLog(Log log) {
             Long id = Thread.currentThread().getId();
-            List<Log> logs = (List<Log>)Cache.get(id);
+            List<Log> logs = (List<Log>) AppCache.get(id);
 
             if (logs == null) {
-                Cache.put(id, logs = new ArrayList<>());
+                AppCache.put(id, logs = new ArrayList<>());
             } // if
 
             logs.add(log);
