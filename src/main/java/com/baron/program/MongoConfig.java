@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by Baron.Chen on 2017/6/9.
  */
-@Configuration
+// so far, not using this
 public class MongoConfig {
 //    public IMongodConfig iMongodConfig() throws IOException {
 //        IMongodConfig iMongodConfig = null;
