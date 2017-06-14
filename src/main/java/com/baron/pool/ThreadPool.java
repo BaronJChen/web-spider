@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * so we override it
 */
 public class ThreadPool implements ExecutorService {
-    private static Logger logger = LogUtil.getLogger(ThreadPool.class);
+    private static Logger logger = Logger.getLogger(ThreadPool.class);
     private BlockingQueue<Runnable> taskQueue;
     private Worker[] workers;
     private boolean isShutdown;
@@ -41,9 +41,10 @@ public class ThreadPool implements ExecutorService {
         taskQueue = new LinkedBlockingDeque<>();
         workers = new Worker[threadCount];
         lock = new ReentrantLock();
+        condition = lock.newCondition();
 
         for (int i = 0; i < threadCount; ++i) {
-            workers[i] = new Worker(taskQueue, this.threadCount, condition);
+            workers[i] = new Worker(taskQueue, this.threadCount, lock, condition);
             workers[i].start();
         } // for
     }
@@ -82,6 +83,11 @@ public class ThreadPool implements ExecutorService {
 
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        if (threadCount.get() == 0) {
+            return true;
+        } // if
+
+        lock.lock();
         condition.wait(unit.toMicros(timeout));
         return true;
     }
@@ -137,12 +143,14 @@ public class ThreadPool implements ExecutorService {
         private boolean isShutdown;
         private AtomicInteger threadCount;
         private Condition condition;
+        private Lock lock;
 
-        public Worker(BlockingQueue<Runnable> taskQueue, AtomicInteger threadCount, Condition condition) {
+        public Worker(BlockingQueue<Runnable> taskQueue, AtomicInteger threadCount, Lock lock, Condition condition) {
             this.taskQueue = taskQueue;
             isShutdown = false;
             this.threadCount = threadCount;
             this.condition = condition;
+            this.lock = lock;
         }
 
         @Override
@@ -151,8 +159,11 @@ public class ThreadPool implements ExecutorService {
                 try {
                     Runnable task = taskQueue.poll(Integer.MAX_VALUE, TimeUnit.DAYS);
                     task.run();
-                } catch (Throwable e) {
-                    logger.error(e);
+                } catch (InterruptedException e) {
+                    break;
+                } catch (Throwable t) {
+                    // make sure worker not fail
+                    continue;
                 } // catch
             } // while
 
@@ -162,6 +173,7 @@ public class ThreadPool implements ExecutorService {
         }
 
         protected void afterShutdownAll() {
+            lock.lock();
             condition.signal();
         }
 

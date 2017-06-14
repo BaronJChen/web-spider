@@ -2,9 +2,11 @@ package com.baron.pool;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -53,18 +55,45 @@ public class ThreadPoolTest {
 
     @Test
     public void isShutdown() throws Exception {
+        ExecutorService executorService = getThreadPool();
+        executorService.shutdown();
+        assertEquals(true, executorService.isShutdown());
     }
 
     @Test
     public void isTerminated() throws Exception {
+        ExecutorService executorService = getThreadPool();
+        executorService.submit((Callable<Void>)() -> {
+            Object obj = new Object();
+            synchronized (obj) {
+                obj.wait();
+            }
+            return null;
+        });
+        executorService.shutdownNow();
+        assertEquals(true, executorService.isTerminated());
     }
 
     @Test
     public void awaitTermination() throws Exception {
+        final List<Object> list = new CopyOnWriteArrayList<>();
+        ExecutorService executorService = getThreadPool();
+        executorService.submit(() -> {
+            Thread.currentThread().yield();
+            list.add(new Object());
+        });
+        executorService.shutdownNow();
+        executorService.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
+        assertNotEquals(0, list.size());
     }
 
     @Test
     public void submit() throws Exception {
+        ExecutorService service = getThreadPool();
+        Future<Object> future = service.submit((Callable<Object>) () -> {
+           return null;
+        });
+        assertEquals(null, future .get());
     }
 
     @Test
