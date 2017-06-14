@@ -1,8 +1,10 @@
 package com.baron.pool;
 
 import com.baron.exception.MethodNotSupportedException;
+import com.baron.program.AppConstants;
 import com.baron.util.ListUtil;
 import com.baron.util.LogUtil;
+import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -34,6 +36,7 @@ public class ThreadPool implements ExecutorService {
     }
 
     protected void init(Integer threadCount) {
+        Preconditions.checkArgument(threadCount > 0, AppConstants.THREAD_COUNT_CAN_NOT_LESS_THAN_ZERO);
         this.threadCount = new AtomicInteger(threadCount);
         taskQueue = new LinkedBlockingDeque<>();
         workers = new Worker[threadCount];
@@ -45,7 +48,7 @@ public class ThreadPool implements ExecutorService {
         } // for
     }
 
-    public ExecutorService create(int threadCount) {
+    public static ExecutorService create(int threadCount) {
         return new ThreadPool(threadCount);
     }
 
@@ -54,6 +57,7 @@ public class ThreadPool implements ExecutorService {
         for (Worker worker : workers) {
             worker.shutdown();
         } // for
+        isShutdown = true;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class ThreadPool implements ExecutorService {
 
     @Override
     public boolean isTerminated() {
-        return false;
+        return threadCount.get() == 0;
     }
 
     @Override
@@ -105,27 +109,27 @@ public class ThreadPool implements ExecutorService {
 
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return null;
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        return null;
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        return null;
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return null;
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public void execute(Runnable command) {
-
+        command.run();
     }
 
     private static class Worker extends Thread {
@@ -145,18 +149,19 @@ public class ThreadPool implements ExecutorService {
         public void run() {
             while (!Thread.currentThread().isInterrupted() && !isShutdown) {
                 try {
-                    Runnable task = taskQueue.poll();
+                    Runnable task = taskQueue.poll(Integer.MAX_VALUE, TimeUnit.DAYS);
                     task.run();
                 } catch (Throwable e) {
                     logger.error(e);
                 } // catch
             } // while
 
-            afterShutdown();
+            if (threadCount.addAndGet(-1) == 0) {
+                afterShutdownAll();
+            } // if
         }
 
-        protected void afterShutdown() {
-            threadCount.addAndGet(-1);
+        protected void afterShutdownAll() {
             condition.signal();
         }
 

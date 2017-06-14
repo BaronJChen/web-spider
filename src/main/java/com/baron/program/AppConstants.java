@@ -11,4 +11,5 @@ public class AppConstants {
 
     // exception message
     public static final String METHOD_NOT_SUPPORTED = "method not supported";
+    public static final String THREAD_COUNT_CAN_NOT_LESS_THAN_ZERO = "thread count can't be less than zero";
 }
