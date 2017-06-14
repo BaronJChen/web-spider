@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Jason on 2017/6/13.
@@ -24,6 +27,8 @@ public class ThreadPool implements ExecutorService {
     private Integer threadCount;
     private Worker[] workers;
     private boolean isShutdown;
+    private Lock lock;
+    private Condition condition;
 
     private ThreadPool(Integer threadCount) {
         init(threadCount);
@@ -33,6 +38,7 @@ public class ThreadPool implements ExecutorService {
         this.threadCount = threadCount;
         taskQueue = new LinkedBlockingDeque<>();
         workers = new Worker[threadCount];
+        lock = new ReentrantLock();
 
         for (int i = 0; i < threadCount; ++i) {
             workers[i] = new Worker(taskQueue);
