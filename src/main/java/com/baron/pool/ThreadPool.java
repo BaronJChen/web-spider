@@ -1,15 +1,14 @@
 package com.baron.pool;
 
+import com.baron.exception.MethodNotSupportedException;
 import com.baron.util.ListUtil;
 import com.baron.util.LogUtil;
-import com.sun.crypto.provider.BlowfishKeyGenerator;
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,24 +23,24 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ThreadPool implements ExecutorService {
     private static Logger logger = LogUtil.getLogger(ThreadPool.class);
     private BlockingQueue<Runnable> taskQueue;
-    private Integer threadCount;
     private Worker[] workers;
     private boolean isShutdown;
     private Lock lock;
     private Condition condition;
+    private AtomicInteger threadCount;
 
     private ThreadPool(Integer threadCount) {
         init(threadCount);
     }
 
     protected void init(Integer threadCount) {
-        this.threadCount = threadCount;
+        this.threadCount = new AtomicInteger(threadCount);
         taskQueue = new LinkedBlockingDeque<>();
         workers = new Worker[threadCount];
         lock = new ReentrantLock();
 
         for (int i = 0; i < threadCount; ++i) {
-            workers[i] = new Worker(taskQueue);
+            workers[i] = new Worker(taskQueue, this.threadCount, condition);
             workers[i].start();
         } // for
     }
@@ -79,22 +78,29 @@ public class ThreadPool implements ExecutorService {
 
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return false;
+        condition.wait(unit.toMicros(timeout));
+        return true;
     }
 
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        return null;
+        FutureTask<T> futureTask = new FutureTask<T>(task);
+        taskQueue.add(futureTask);
+        return futureTask;
     }
 
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
-        return null;
+        FutureTask<T> futureTask = new FutureTask<T>(task, result);
+        taskQueue.add(futureTask);
+        return futureTask;
     }
 
     @Override
     public Future<?> submit(Runnable task) {
-        return null;
+        FutureTask futureTask = new FutureTask(task, null);
+        taskQueue.add(futureTask);
+        return futureTask;
     }
 
     @Override
@@ -125,10 +131,14 @@ public class ThreadPool implements ExecutorService {
     private static class Worker extends Thread {
         private BlockingQueue<Runnable> taskQueue;
         private boolean isShutdown;
+        private AtomicInteger threadCount;
+        private Condition condition;
 
-        public Worker(BlockingQueue<Runnable> taskQueue) {
+        public Worker(BlockingQueue<Runnable> taskQueue, AtomicInteger threadCount, Condition condition) {
             this.taskQueue = taskQueue;
             isShutdown = false;
+            this.threadCount = threadCount;
+            this.condition = condition;
         }
 
         @Override
@@ -140,7 +150,14 @@ public class ThreadPool implements ExecutorService {
                 } catch (Throwable e) {
                     logger.error(e);
                 } // catch
-            }
+            } // while
+
+            afterShutdown();
+        }
+
+        protected void afterShutdown() {
+            threadCount.addAndGet(-1);
+            condition.signal();
         }
 
         public void shutdown() {
