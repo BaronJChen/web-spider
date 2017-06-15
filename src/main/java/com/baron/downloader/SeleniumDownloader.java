@@ -4,6 +4,9 @@ import com.baron.pool.WebDriverPool;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Task;
@@ -13,6 +16,8 @@ import us.codecraft.webmagic.selector.PlainText;
 /**
  * Created by Jason on 2017/6/12.
  */
+@Component
+@Scope("prototype")
 public class SeleniumDownloader extends HttpClientDownloader {
     private static final WebDriverPool driverPool = new WebDriverPool(10);
     private static final Logger logger = Logger.getLogger(SeleniumDownloader.class);

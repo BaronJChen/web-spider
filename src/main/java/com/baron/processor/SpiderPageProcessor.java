@@ -16,7 +16,6 @@ public class SpiderPageProcessor implements PageProcessor {
     public void process(Page page) {
         SpiderTask spiderTask = AppCache.getThreadLocal(AppConstants.THREAD_LOCAL_CACHE_SPIDER_TASK);
         SpiderTemplate spiderTemplate = AppCache.getThreadLocal(AppConstants.THREAD_LOCAL_CACHE_SPIDER_TEMPLATE);
-
     }
 
     @Override

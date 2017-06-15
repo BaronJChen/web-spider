@@ -3,7 +3,6 @@ package com.baron.pool;
 import com.baron.exception.MethodNotSupportedException;
 import com.baron.program.AppConstants;
 import com.baron.util.ListUtil;
-import com.baron.util.LogUtil;
 import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 
@@ -18,10 +17,11 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by Jason on 2017/6/13.
  */
+
 /**
  * We need threadIds, but default ThreadPoolExecutor can't meet the demand
  * so we override it
-*/
+ */
 public class ThreadPool implements ExecutorService {
     private static Logger logger = Logger.getLogger(ThreadPool.class);
     private BlockingQueue<Runnable> taskQueue;
@@ -33,6 +33,10 @@ public class ThreadPool implements ExecutorService {
 
     private ThreadPool(Integer threadCount) {
         init(threadCount);
+    }
+
+    public static ExecutorService create(int threadCount) {
+        return new ThreadPool(threadCount);
     }
 
     protected void init(Integer threadCount) {
@@ -47,10 +51,25 @@ public class ThreadPool implements ExecutorService {
             workers[i] = new Worker(taskQueue, this.threadCount, lock, condition);
             workers[i].start();
         } // for
+
+        waitWorkers(threadCount);
     }
 
-    public static ExecutorService create(int threadCount) {
-        return new ThreadPool(threadCount);
+    protected void waitWorkers(int threadCount) {
+        boolean flag = false;
+
+        while (!flag) {
+            lock.lock();
+            try {
+                condition.await();
+                flag = true;
+            } catch (InterruptedException e) {
+                logger.error(e);
+            } finally {
+                lock.unlock();
+            }
+        } // while
+        this.threadCount.set(threadCount);
     }
 
     @Override
@@ -87,8 +106,13 @@ public class ThreadPool implements ExecutorService {
             return true;
         } // if
 
-        lock.lock();
-        condition.wait(unit.toMicros(timeout));
+        try {
+            lock.lock();
+            condition.await(timeout, unit);
+        } finally {
+            lock.unlock();
+        } // finally
+
         return true;
     }
 
@@ -119,7 +143,8 @@ public class ThreadPool implements ExecutorService {
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+            InterruptedException {
         throw new MethodNotSupportedException();
     }
 
@@ -129,7 +154,8 @@ public class ThreadPool implements ExecutorService {
     }
 
     @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+            InterruptedException, ExecutionException, TimeoutException {
         throw new MethodNotSupportedException();
     }
 
@@ -153,8 +179,18 @@ public class ThreadPool implements ExecutorService {
             this.lock = lock;
         }
 
+        protected void afterStart() {
+            if (threadCount.addAndGet(-1) == 0) {
+                lock.lock();
+                condition.signal();
+                lock.unlock();
+            } // if
+        }
+
         @Override
         public void run() {
+            afterStart();
+
             while (!Thread.currentThread().isInterrupted() && !isShutdown) {
                 try {
                     Runnable task = taskQueue.poll(Integer.MAX_VALUE, TimeUnit.DAYS);
@@ -167,14 +203,15 @@ public class ThreadPool implements ExecutorService {
                 } // catch
             } // while
 
-            if (threadCount.addAndGet(-1) == 0) {
-                afterShutdownAll();
-            } // if
+            afterShutdown();
         }
 
-        protected void afterShutdownAll() {
-            lock.lock();
-            condition.signal();
+        protected void afterShutdown() {
+            if (threadCount.addAndGet(-1) == 0) {
+                lock.lock();
+                condition.signal();
+                lock.unlock();
+            } // if
         }
 
         public void shutdown() {

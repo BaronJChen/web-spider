@@ -15,7 +15,7 @@ import java.util.Date;
  */
 
 /**
- * package all throwable error and exception
+ * package all error and exception
  */
 @ControllerAdvice
 public class ErrorController {

@@ -6,6 +6,7 @@ import us.codecraft.webmagic.Spider;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
@@ -23,6 +24,7 @@ public class SpiderTask {
     private ExecutorService threadPool;
     private WebDriverPool webDriverPool;
     private Spider spider;
+    private Map<Long, Log> logs;
     private State state;
 
     public SpiderTask() {
