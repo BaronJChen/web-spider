@@ -3,7 +3,6 @@ package com.baron.pool;
 import com.baron.exception.MethodNotSupportedException;
 import com.baron.program.AppConstants;
 import com.baron.util.ListUtil;
-import com.baron.util.LogUtil;
 import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 
@@ -18,12 +17,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by Jason on 2017/6/13.
  */
+
 /**
  * We need threadIds, but default ThreadPoolExecutor can't meet the demand
  * so we override it
-*/
+ */
 public class ThreadPool implements ExecutorService {
-    private static Logger logger = LogUtil.getLogger(ThreadPool.class);
+    private static Logger logger = Logger.getLogger(ThreadPool.class);
     private BlockingQueue<Runnable> taskQueue;
     private Worker[] workers;
     private boolean isShutdown;
@@ -35,21 +35,41 @@ public class ThreadPool implements ExecutorService {
         init(threadCount);
     }
 
+    public static ExecutorService create(int threadCount) {
+        return new ThreadPool(threadCount);
+    }
+
     protected void init(Integer threadCount) {
         Preconditions.checkArgument(threadCount > 0, AppConstants.THREAD_COUNT_CAN_NOT_LESS_THAN_ZERO);
         this.threadCount = new AtomicInteger(threadCount);
         taskQueue = new LinkedBlockingDeque<>();
         workers = new Worker[threadCount];
         lock = new ReentrantLock();
+        condition = lock.newCondition();
 
         for (int i = 0; i < threadCount; ++i) {
-            workers[i] = new Worker(taskQueue, this.threadCount, condition);
+            workers[i] = new Worker(taskQueue, this.threadCount, lock, condition);
             workers[i].start();
         } // for
+
+        waitWorkers(threadCount);
     }
 
-    public static ExecutorService create(int threadCount) {
-        return new ThreadPool(threadCount);
+    protected void waitWorkers(int threadCount) {
+        boolean flag = false;
+
+        while (!flag) {
+            lock.lock();
+            try {
+                condition.await();
+                flag = true;
+            } catch (InterruptedException e) {
+                logger.error(e);
+            } finally {
+                lock.unlock();
+            }
+        } // while
+        this.threadCount.set(threadCount);
     }
 
     @Override
@@ -82,7 +102,17 @@ public class ThreadPool implements ExecutorService {
 
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        condition.wait(unit.toMicros(timeout));
+        if (threadCount.get() == 0) {
+            return true;
+        } // if
+
+        try {
+            lock.lock();
+            condition.await(timeout, unit);
+        } finally {
+            lock.unlock();
+        } // finally
+
         return true;
     }
 
@@ -113,7 +143,8 @@ public class ThreadPool implements ExecutorService {
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+            InterruptedException {
         throw new MethodNotSupportedException();
     }
 
@@ -123,7 +154,8 @@ public class ThreadPool implements ExecutorService {
     }
 
     @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+            InterruptedException, ExecutionException, TimeoutException {
         throw new MethodNotSupportedException();
     }
 
@@ -137,32 +169,49 @@ public class ThreadPool implements ExecutorService {
         private boolean isShutdown;
         private AtomicInteger threadCount;
         private Condition condition;
+        private Lock lock;
 
-        public Worker(BlockingQueue<Runnable> taskQueue, AtomicInteger threadCount, Condition condition) {
+        public Worker(BlockingQueue<Runnable> taskQueue, AtomicInteger threadCount, Lock lock, Condition condition) {
             this.taskQueue = taskQueue;
             isShutdown = false;
             this.threadCount = threadCount;
             this.condition = condition;
+            this.lock = lock;
+        }
+
+        protected void afterStart() {
+            if (threadCount.addAndGet(-1) == 0) {
+                lock.lock();
+                condition.signal();
+                lock.unlock();
+            } // if
         }
 
         @Override
         public void run() {
+            afterStart();
+
             while (!Thread.currentThread().isInterrupted() && !isShutdown) {
                 try {
                     Runnable task = taskQueue.poll(Integer.MAX_VALUE, TimeUnit.DAYS);
                     task.run();
-                } catch (Throwable e) {
-                    logger.error(e);
+                } catch (InterruptedException e) {
+                    break;
+                } catch (Throwable t) {
+                    // make sure worker not fail
+                    continue;
                 } // catch
             } // while
 
-            if (threadCount.addAndGet(-1) == 0) {
-                afterShutdownAll();
-            } // if
+            afterShutdown();
         }
 
-        protected void afterShutdownAll() {
-            condition.signal();
+        protected void afterShutdown() {
+            if (threadCount.addAndGet(-1) == 0) {
+                lock.lock();
+                condition.signal();
+                lock.unlock();
+            } // if
         }
 
         public void shutdown() {
