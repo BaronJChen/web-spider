@@ -11,7 +11,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 /**
  * Created by Jason on 2017/6/13.
  */
-public class DefaultPageProcessor implements PageProcessor {
+public class SpiderPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
         SpiderTask spiderTask = AppCache.getThreadLocal(AppConstants.THREAD_LOCAL_CACHE_SPIDER_TASK);
