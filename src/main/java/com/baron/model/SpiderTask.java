@@ -1,12 +1,13 @@
 package com.baron.model;
 
-import com.baron.pool.WebDriverPool;
-import org.openqa.selenium.WebDriver;
+import com.baron.concurrent.WebDriverPool;
+import org.eclipse.jetty.util.BlockingArrayQueue;
 import us.codecraft.webmagic.Spider;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
@@ -19,7 +20,7 @@ public class SpiderTask {
     private Long failedCount;
     private Date startedDate;
     private Date finishedDate;
-    private BlockingQueue<TaskUnit> taskUnitResults;
+    private Queue<UnitTask> unitTasks;
     private List<Integer> threadIds;
     private ExecutorService threadPool;
     private WebDriverPool webDriverPool;
@@ -28,14 +29,7 @@ public class SpiderTask {
     private State state;
 
     public SpiderTask() {
-    }
-
-    public List<Integer> getThreadIds() {
-        return threadIds;
-    }
-
-    public void setThreadIds(List<Integer> threadIds) {
-        this.threadIds = threadIds;
+        unitTasks = new BlockingArrayQueue<>();
     }
 
     public SpiderTemplate getSpiderTemplate() {
@@ -78,12 +72,36 @@ public class SpiderTask {
         this.finishedDate = finishedDate;
     }
 
-    public BlockingQueue<TaskUnit> getTaskUnitResults() {
-        return taskUnitResults;
+    public Queue<UnitTask> getUnitTasks() {
+        return unitTasks;
     }
 
-    public void setTaskUnitResults(BlockingQueue<TaskUnit> taskUnitResults) {
-        this.taskUnitResults = taskUnitResults;
+    public void setUnitTasks(BlockingQueue<UnitTask> unitTasks) {
+        this.unitTasks = unitTasks;
+    }
+
+    public List<Integer> getThreadIds() {
+        return threadIds;
+    }
+
+    public void setThreadIds(List<Integer> threadIds) {
+        this.threadIds = threadIds;
+    }
+
+    public ExecutorService getThreadPool() {
+        return threadPool;
+    }
+
+    public void setThreadPool(ExecutorService threadPool) {
+        this.threadPool = threadPool;
+    }
+
+    public WebDriverPool getWebDriverPool() {
+        return webDriverPool;
+    }
+
+    public void setWebDriverPool(WebDriverPool webDriverPool) {
+        this.webDriverPool = webDriverPool;
     }
 
     public Spider getSpider() {
@@ -92,6 +110,14 @@ public class SpiderTask {
 
     public void setSpider(Spider spider) {
         this.spider = spider;
+    }
+
+    public Map<Long, Log> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(Map<Long, Log> logs) {
+        this.logs = logs;
     }
 
     public State getState() {

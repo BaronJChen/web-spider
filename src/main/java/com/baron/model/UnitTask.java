@@ -11,10 +11,14 @@ import java.util.List;
 @Document(collection = "unit_task")
 public class UnitTask {
     private String id;
+    private String spiderTaskId;
+    private String spiderTemplateId;
     private String url;
+    private String html;
     private Date startAt;
     private Date finishedAt;
     private Boolean succeeded;
+    private Integer statusCode;
     private Object result;
     private List<Log> logs;
 

@@ -1,4 +1,4 @@
-package com.baron.pool;
+package com.baron.concurrent;
 
 import com.baron.exception.MethodNotSupportedException;
 import com.baron.program.AppConstants;
@@ -30,7 +30,7 @@ public class ThreadPoolBuilder {
         return this;
     }
 
-    public ExecutorService build() {
+    public ThreadPool build() {
         return new ThreadPool(threadCount);
     }
 

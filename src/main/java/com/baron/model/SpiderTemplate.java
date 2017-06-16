@@ -24,6 +24,7 @@ public class SpiderTemplate {
     private Integer sleepTime;
     private Long maxPageCount;
     private Integer timeout;
+    private Boolean jsRendering;
     private List<String> urlRegexes;
     private Map<String, String> cookies;
     private Map<String, String> headers;

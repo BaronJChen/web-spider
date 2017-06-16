@@ -2,7 +2,7 @@ package com.baron.service;
 
 import com.baron.model.SpiderTask;
 import com.baron.model.SpiderTemplate;
-import com.baron.pool.ThreadPoolBuilder;
+import com.baron.concurrent.ThreadPoolBuilder;
 import com.baron.program.AppConstants;
 import com.baron.repository.SpiderTemplateRepository;
 import com.google.common.base.Preconditions;

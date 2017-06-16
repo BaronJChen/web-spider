@@ -1,10 +1,9 @@
 package com.baron.downloader;
 
-import com.baron.pool.WebDriverPool;
+import com.baron.concurrent.WebDriverPool;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Page;

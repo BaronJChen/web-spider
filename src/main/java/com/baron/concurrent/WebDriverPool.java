@@ -1,11 +1,10 @@
-package com.baron.pool;
+package com.baron.concurrent;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -18,7 +17,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class WebDriverPool implements Pool<WebDriver> {
+public class WebDriverPool {
 	private Logger logger = Logger.getLogger(getClass());
 	private final static int DEFAULT_CAPACITY = 5;
 	private final int capacity;

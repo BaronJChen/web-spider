@@ -1,7 +1,5 @@
 package com.baron.pipeline;
 
-import com.baron.pool.Pool;
-import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoTemplate;

@@ -7,7 +7,7 @@ import us.codecraft.webmagic.Task;
 /**
  * Downloader is the part that downloads web pages and store in Page object. <br>
  * Downloader has {@link #setThread(int)} method because downloader is always the bottleneck of a crawler,
- * there are always some mechanisms such as pooling in downloader, and pool size is related to thread numbers.
+ * there are always some mechanisms such as pooling in downloader, and concurrent size is related to thread numbers.
  *
  * @author code4crafter@gmail.com <br>
  * @since 0.1.0
