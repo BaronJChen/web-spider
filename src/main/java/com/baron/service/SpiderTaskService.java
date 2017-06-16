@@ -2,20 +2,33 @@ package com.baron.service;
 
 import com.baron.model.SpiderTask;
 import com.baron.model.SpiderTemplate;
-import org.springframework.stereotype.Component;
+import com.baron.pool.ThreadPoolBuilder;
+import com.baron.program.AppConstants;
+import com.baron.repository.SpiderTemplateRepository;
+import com.google.common.base.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Jason on 2017/6/13.
  */
-@Component
-public class SpiderTaskService implements BaseService {
-    public SpiderTask create(SpiderTemplate spiderTemplate) {
+@Service
+public class SpiderTaskService extends BaseService {
+    @Autowired
+    private SpiderTemplateRepository spiderTemplateRepository;
+
+    public SpiderTask add(SpiderTemplate spiderTemplate) {
         SpiderTask spiderTask = new SpiderTask();
-        ExecutorService service = Executors.newFixedThreadPool(spiderTemplate.getThreadCount());
+        ExecutorService service = new ThreadPoolBuilder().threadCount(spiderTemplate.getThreadCount()).build();
+
         return null;
+    }
+
+    public SpiderTask add(String spiderTemplateId) {
+        Preconditions.checkArgument(spiderTemplateId == null || spiderTemplateId.trim().length() == 0
+                , AppConstants.CHECK_ARGUMENT_SPIDER_TEMPLATE_ID_NULL);
+        return add(spiderTemplateRepository.findById(spiderTemplateId));
     }
 }

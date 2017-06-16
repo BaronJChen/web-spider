@@ -1,4 +1,4 @@
-package com.baron.controller;
+package com.baron.controller.system;
 
 import com.alibaba.fastjson.JSON;
 import com.baron.model.Exception;

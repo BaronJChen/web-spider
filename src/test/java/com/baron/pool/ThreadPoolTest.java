@@ -16,12 +16,12 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class ThreadPoolTest {
     private ExecutorService getThreadPool() {
-        return ThreadPool.create(2);
+        return new ThreadPoolBuilder().threadCount(2).build();
     }
 
     @Test
     public void create() throws Exception {
-        ExecutorService executorService = ThreadPool.create(10);
+        ExecutorService executorService = getThreadPool();
         assertNotNull(executorService);
     }
 

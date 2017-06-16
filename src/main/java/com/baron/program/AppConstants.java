@@ -17,5 +17,7 @@ public class AppConstants {
     public static final String THREAD_COUNT_CAN_NOT_LESS_THAN_ZERO = "thread count can't be less than zero";
     public static final String SPRING_APPLICATION_CONTEXT_NULL = "spring application context null";
 
-    // application
+    // check arguments message
+    public static final String CHECK_ARGUMENT_SPIDER_TEMPLATE_ID_NULL = "spider template id is null or blank";
+
 }

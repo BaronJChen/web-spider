@@ -1,6 +1,9 @@
 package com.baron.program;
 
+import com.baron.properties.AppProperties;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +13,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableAutoConfiguration
+@EnableConfigurationProperties(AppProperties.class)
 public class AppConfiguration {
     @Bean
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        AppCache.put(AppConstants.CACHE_SPRING_APPLICATON_CONTEXT, applicationContext);
+    public CommandLineRunner setApplicationContext(ApplicationContext applicationContext) {
+        return args -> AppCache.put(AppConstants.CACHE_SPRING_APPLICATON_CONTEXT, applicationContext);
     }
 }

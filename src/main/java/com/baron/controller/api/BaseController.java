@@ -1,4 +1,4 @@
-package com.baron.controller;
+package com.baron.controller.api;
 
 /**
  * Created by Jason on 2017/5/31.

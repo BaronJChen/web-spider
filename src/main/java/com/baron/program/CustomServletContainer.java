@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 public class CustomServletContainer implements EmbeddedServletContainerCustomizer {
     public void customize(ConfigurableEmbeddedServletContainer configurableEmbeddedServletContainer) {
         configurableEmbeddedServletContainer.setPort(80);
-        configurableEmbeddedServletContainer.setContextPath("");
+        configurableEmbeddedServletContainer.setContextPath("/api");
     }
 }

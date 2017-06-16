@@ -1,6 +1,7 @@
 package com.baron.model;
 
 import com.baron.filter.Filter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 @Document
 public class SpiderTemplate {
+    @Id
     private String id;
     private String name;
     private String domain;

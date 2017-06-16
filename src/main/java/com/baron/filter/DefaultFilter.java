@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
  * Created by Baron.Chen on 2017/6/15.
  */
 @Component
-@Scope("singleton")
+@Scope("prototype")
 public class DefaultFilter implements Filter {
 }

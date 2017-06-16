@@ -14,7 +14,7 @@ import us.codecraft.webmagic.pipeline.Pipeline;
  * Created by Jason on 2017/6/13.
  */
 @Component
-@Scope("singleton")
+@Scope("prototype")
 public class DefaultPipeline implements Pipeline {
     @Autowired
     MongoTemplate mongoTemplate;

@@ -20,7 +20,7 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                logs/its_app_%d{yyyy-MM-dd}_trace.log
+                logs/web_spider_%d{yyyy-MM-dd}_trace.log
             </fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -45,7 +45,7 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                logs/its_app_%d{yyyy-MM-dd}_error.log
+                logs/web_spider_%d{yyyy-MM-dd}_error.log
             </fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>

@@ -1,4 +1,4 @@
-package com.baron.controller;
+package com.baron.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
